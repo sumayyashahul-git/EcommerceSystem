@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+
+  # =====================
+  # SQL SERVER
+  # Stores data for: Identity, Product, Order, Payment, Inventory
+  # Each service will have its OWN database inside this one SQL Server instance
+  # =====================
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Ecommerce@123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - ecommerce-network
+
+  # =====================
+  # REDIS
+  # Used by: Basket Service (shopping cart)
+  # Fast temporary storage — cart data lives here
+  # =====================
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - ecommerce-network
+
+  # =====================
+  # ZOOKEEPER
+  # Kafka cannot run without Zookeeper
+  # Think of it as Kafka's manager/coordinator
+  # You never talk to Zookeeper directly
+  # =====================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - ecommerce-network
+
+  # =====================
+  # KAFKA
+  # Used for: Async events between services
+  # Example: OrderPlaced event → Inventory, Payment, Notification all receive it
+  # =====================
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - ecommerce-network
+
+  # =====================
+  # RABBITMQ
+  # Used for: Saga orchestration via MassTransit
+  # Has a web dashboard at http://localhost:15672
+  # Login: guest / guest
+  # =====================
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"       # Services connect here
+      - "15672:15672"     # Web dashboard
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - ecommerce-network
+
+  # =====================
+  # JAEGER
+  # Distributed tracing — tracks a request across ALL services
+  # Web UI at http://localhost:16686
+  # =====================
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "6831:6831/udp"   # Receives traces from services
+      - "16686:16686"     # Web UI
+      - "4317:4317"       # OpenTelemetry gRPC receiver
+    networks:
+      - ecommerce-network
+
+  # =====================
+  # PROMETHEUS
+  # Collects metrics (numbers) from all services
+  # Example: requests/second, error rate, response time
+  # =====================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - ecommerce-network
+
+  # =====================
+  # GRAFANA
+  # Visualizes Prometheus metrics as dashboards
+  # Web UI at http://localhost:3100
+  # Login: admin / admin
+  # =====================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3100:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - prometheus
+    networks:
+      - ecommerce-network
+
+# =====================
+# VOLUMES
+# Volumes = persistent storage for containers
+# Without this, SQL Server data is lost when container restarts
+# =====================
+volumes:
+  sqlserver_data:
+
+# =====================
+# NETWORKS
+# All containers on the same network can talk to each other by name
+# Example: Kafka container can reach SQL Server using "sqlserver" as hostname
+# =====================
+networks:
+  ecommerce-network:
+    driver: bridge

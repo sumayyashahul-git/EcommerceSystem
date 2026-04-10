@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
+    <Compile Include="obj\Debug\net8.0\Basket.Application.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net8.0\Basket.Application.GlobalUsings.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net8.0\Basket.Application.deps.json" />
+    <Content Include="obj\Basket.Application.csproj.nuget.dgspec.json" />
+    <Content Include="obj\Debug\net8.0\Basket.Application.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\project.assets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net8.0\Basket.Application.dll" />
+    <None Include="bin\Debug\net8.0\Basket.Application.pdb" />
+    <None Include="obj\Basket.Application.csproj.nuget.g.props" />
+    <None Include="obj\Basket.Application.csproj.nuget.g.targets" />
+    <None Include="obj\Debug\net8.0\Basket.Application.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\net8.0\Basket.Application.assets.cache" />
+    <None Include="obj\Debug\net8.0\Basket.Application.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\net8.0\Basket.Application.dll" />
+    <None Include="obj\Debug\net8.0\Basket.Application.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="obj\Debug\net8.0\Basket.Application.pdb" />
+    <None Include="obj\Debug\net8.0\refint\Basket.Application.dll" />
+    <None Include="obj\Debug\net8.0\ref\Basket.Application.dll" />
+    <None Include="obj\project.nuget.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Queries\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
+    <Compile Include="obj\Debug\net8.0\Product.Application.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net8.0\Product.Application.GlobalUsings.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net8.0\Product.Application.deps.json" />
+    <Content Include="obj\Debug\net8.0\Product.Application.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Product.Application.csproj.nuget.dgspec.json" />
+    <Content Include="obj\project.assets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net8.0\Product.Application.dll" />
+    <None Include="bin\Debug\net8.0\Product.Application.pdb" />
+    <None Include="obj\Debug\net8.0\Product.Application.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\net8.0\Product.Application.assets.cache" />
+    <None Include="obj\Debug\net8.0\Product.Application.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\net8.0\Product.Application.dll" />
+    <None Include="obj\Debug\net8.0\Product.Application.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="obj\Debug\net8.0\Product.Application.pdb" />
+    <None Include="obj\Debug\net8.0\refint\Product.Application.dll" />
+    <None Include="obj\Debug\net8.0\ref\Product.Application.dll" />
+    <None Include="obj\Product.Application.csproj.nuget.g.props" />
+    <None Include="obj\Product.Application.csproj.nuget.g.targets" />
+    <None Include="obj\project.nuget.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Behaviors\" />
+    <Folder Include="Commands\DeleteProduct\" />
+    <Folder Include="Commands\UpdateProduct\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Product.Domain\Product.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="MediatR" Version="14.1.0" />
+  </ItemGroup>
+
+</Project>

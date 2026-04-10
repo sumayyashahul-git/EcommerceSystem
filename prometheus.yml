@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 15s   # Collect metrics every 15 seconds
+
+scrape_configs:
+  - job_name: 'ecommerce-services'
+    static_configs:
+      - targets:
+          - 'host.docker.internal:5001'  # Identity Service
+          - 'host.docker.internal:5002'  # Product Service
+          - 'host.docker.internal:5003'  # Inventory Service
+          - 'host.docker.internal:5004'  # Order Service
+          - 'host.docker.internal:5005'  # Payment Service
+          - 'host.docker.internal:5006'  # Basket Service
+          - 'host.docker.internal:5007'  # Notification Service

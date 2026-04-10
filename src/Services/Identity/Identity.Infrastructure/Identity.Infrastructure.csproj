@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
+    <Compile Include="obj\Debug\net8.0\Identity.Infrastructure.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net8.0\Identity.Infrastructure.GlobalUsings.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net8.0\Identity.Infrastructure.deps.json" />
+    <Content Include="obj\Debug\net8.0\Identity.Infrastructure.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Identity.Infrastructure.csproj.nuget.dgspec.json" />
+    <Content Include="obj\project.assets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net8.0\Identity.Application.dll" />
+    <None Include="bin\Debug\net8.0\Identity.Application.pdb" />
+    <None Include="bin\Debug\net8.0\Identity.Domain.dll" />
+    <None Include="bin\Debug\net8.0\Identity.Domain.pdb" />
+    <None Include="bin\Debug\net8.0\Identity.Infrastructure.dll" />
+    <None Include="bin\Debug\net8.0\Identity.Infrastructure.pdb" />
+    <None Include="bin\Debug\net8.0\SharedKernel.dll" />
+    <None Include="bin\Debug\net8.0\SharedKernel.pdb" />
+    <None Include="obj\Debug\net8.0\Identity.9C1318B7.Up2Date" />
+    <None Include="obj\Debug\net8.0\Identity.Infrastructure.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\net8.0\Identity.Infrastructure.assets.cache" />
+    <None Include="obj\Debug\net8.0\Identity.Infrastructure.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\net8.0\Identity.Infrastructure.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\net8.0\Identity.Infrastructure.dll" />
+    <None Include="obj\Debug\net8.0\Identity.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="obj\Debug\net8.0\Identity.Infrastructure.pdb" />
+    <None Include="obj\Debug\net8.0\refint\Identity.Infrastructure.dll" />
+    <None Include="obj\Debug\net8.0\ref\Identity.Infrastructure.dll" />
+    <None Include="obj\Identity.Infrastructure.csproj.nuget.g.props" />
+    <None Include="obj\Identity.Infrastructure.csproj.nuget.g.targets" />
+    <None Include="obj\project.nuget.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Identity.Application\Identity.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
