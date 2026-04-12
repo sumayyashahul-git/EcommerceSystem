@@ -7,39 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
-    <Compile Include="obj\Debug\net8.0\Order.Application.AssemblyInfo.cs" />
-    <Compile Include="obj\Debug\net8.0\Order.Application.GlobalUsings.g.cs" />
+    <Folder Include="Commands\CancelOrder\" />
+    <Folder Include="Queries\GetUserOrders\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bin\Debug\net8.0\Order.Application.deps.json" />
-    <Content Include="obj\Debug\net8.0\Order.Application.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\Order.Application.csproj.nuget.dgspec.json" />
-    <Content Include="obj\project.assets.json" />
+    <ProjectReference Include="..\Order.Domain\Order.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="bin\Debug\net8.0\Order.Application.dll" />
-    <None Include="bin\Debug\net8.0\Order.Application.pdb" />
-    <None Include="obj\Debug\net8.0\Order.Application.AssemblyInfoInputs.cache" />
-    <None Include="obj\Debug\net8.0\Order.Application.assets.cache" />
-    <None Include="obj\Debug\net8.0\Order.Application.csproj.CoreCompileInputs.cache" />
-    <None Include="obj\Debug\net8.0\Order.Application.dll" />
-    <None Include="obj\Debug\net8.0\Order.Application.GeneratedMSBuildEditorConfig.editorconfig" />
-    <None Include="obj\Debug\net8.0\Order.Application.pdb" />
-    <None Include="obj\Debug\net8.0\refint\Order.Application.dll" />
-    <None Include="obj\Debug\net8.0\ref\Order.Application.dll" />
-    <None Include="obj\Order.Application.csproj.nuget.g.props" />
-    <None Include="obj\Order.Application.csproj.nuget.g.targets" />
-    <None Include="obj\project.nuget.cache" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Queries\" />
+    <PackageReference Include="MediatR" Version="14.1.0" />
   </ItemGroup>
 
 </Project>
