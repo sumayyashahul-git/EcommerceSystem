@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MediatR;
+using Order.Application.DTOs;
+using Order.Application.Interfaces;
+using SharedKernel.Events;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using MediatR;
-using Order.Application.DTOs;
-using Order.Application.Interfaces;
-using Order.Domain.Events;
 
 namespace Order.Application.Commands.PlaceOrder;
 
@@ -50,8 +50,8 @@ public class PlaceOrderCommandHandler
 
         // Step 4 — Publish to RabbitMQ via MassTransit
         var orderPlacedEvent = order.DomainEvents
-            .OfType<OrderPlacedEvent>()
-            .FirstOrDefault();
+          .OfType<OrderPlacedIntegrationEvent>()
+          .FirstOrDefault();
 
         if (orderPlacedEvent != null)
         {

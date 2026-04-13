@@ -1,52 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Order.Domain.Enums;
-using Order.Domain.Events;
+﻿using Order.Domain.Enums;
 using SharedKernel.Domain;
+using SharedKernel.Events;
 
 namespace Order.Domain.Entities;
 
-/// <summary>
-/// Order Aggregate Root.
-/// Controls ALL order-related operations.
-/// Raises domain events when important things happen.
-/// </summary>
 public class Order : AggregateRoot
 {
-    // Who placed this order
     public Guid UserId { get; private set; }
-
-    // Unique order reference (human readable)
     public string OrderNumber { get; private set; } = null!;
-
-    // Current status
     public OrderStatus Status { get; private set; }
-
-    // Financial
     public decimal TotalAmount { get; private set; }
-
-    // Shipping address
     public string ShippingAddress { get; private set; } = null!;
-
-    // Notes
     public string? Notes { get; private set; }
 
-    // Order items — private list
-    // External code uses OrderItems (read-only)
     private readonly List<OrderItem> _orderItems = new();
     public IReadOnlyCollection<OrderItem> OrderItems
         => _orderItems.AsReadOnly();
 
     private Order() { }
 
-    /// <summary>
-    /// Factory method — creates a new order
-    /// Also raises OrderPlacedEvent for Kafka
-    /// </summary>
     public static Order Create(
         Guid userId,
         string shippingAddress,
@@ -66,7 +38,6 @@ public class Order : AggregateRoot
             OrderNumber = GenerateOrderNumber()
         };
 
-        // Add all items
         foreach (var item in items)
         {
             var orderItem = OrderItem.Create(
@@ -79,57 +50,51 @@ public class Order : AggregateRoot
             order._orderItems.Add(orderItem);
         }
 
-        // Calculate total
-        order.TotalAmount = order._orderItems
-            .Sum(i => i.TotalPrice);
+        order.TotalAmount = order._orderItems.Sum(i => i.TotalPrice);
 
-        // Raise domain event → will be published to Kafka
-        order.AddDomainEvent(new OrderPlacedEvent(
-            order.Id,
-            order.UserId,
-            order.OrderNumber,
-            order.TotalAmount,
-            order._orderItems.Select(i => new OrderItemEvent(
-                i.ProductId,
-                i.ProductName,
-                i.UnitPrice,
-                i.Quantity)).ToList()));
+        order.AddDomainEvent(new OrderPlacedIntegrationEvent
+        {
+            OrderId = order.Id,
+            UserId = order.UserId,
+            OrderNumber = order.OrderNumber,
+            TotalAmount = order.TotalAmount,
+            Items = order._orderItems.Select(i => new OrderItemIntegrationEvent
+            {
+                ProductId = i.ProductId,
+                ProductName = i.ProductName,
+                UnitPrice = i.UnitPrice,
+                Quantity = i.Quantity
+            }).ToList()
+        });
 
         return order;
     }
 
-    // Called when payment is confirmed
     public void Confirm()
     {
         Status = OrderStatus.Confirmed;
         SetUpdatedAt();
     }
 
-    // Called when order is cancelled
     public void Cancel(string reason)
     {
         if (Status == OrderStatus.Delivered)
             throw new InvalidOperationException(
                 "Cannot cancel a delivered order.");
-
         Status = OrderStatus.Cancelled;
         Notes = reason;
         SetUpdatedAt();
     }
 
-    // Called when order is shipped
     public void Ship()
     {
         if (Status != OrderStatus.Confirmed)
             throw new InvalidOperationException(
                 "Only confirmed orders can be shipped.");
-
         Status = OrderStatus.Shipped;
         SetUpdatedAt();
     }
 
-    // Generate readable order number
-    // Example: ORD-20240410-A3F9
     private static string GenerateOrderNumber()
     {
         var date = DateTime.UtcNow.ToString("yyyyMMdd");

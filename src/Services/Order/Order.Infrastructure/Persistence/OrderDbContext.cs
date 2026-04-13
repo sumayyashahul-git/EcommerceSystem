@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Order.Domain.Entities;
 using SharedKernel.Events;
 
@@ -17,13 +11,18 @@ public class OrderDbContext : DbContext
     {
     }
 
-    public DbSet<Order.Domain.Entities.Order> Orders => Set<Order.Domain.Entities.Order>();
+    public DbSet<Order.Domain.Entities.Order> Orders
+        => Set<Order.Domain.Entities.Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // Ignore ALL event types
         modelBuilder.Ignore<BaseEvent>();
+        modelBuilder.Ignore<OrderPlacedIntegrationEvent>();
+
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(OrderDbContext).Assembly);
     }

@@ -1,13 +1,51 @@
+using Inventory.Application.Consumers;
+using Inventory.Application.Interfaces;
+using Inventory.API.Middleware;
+using Inventory.Infrastructure.Persistence;
+using Inventory.Infrastructure.Repositories;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<InventoryDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("InventoryDb")));
+
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+
+// MassTransit — registers consumer and connects to RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+    // Register our consumer
+    x.AddConsumer<OrderPlacedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(
+            builder.Configuration["RabbitMQ:Host"] ?? "localhost",
+            builder.Configuration["RabbitMQ:VirtualHost"] ?? "/",
+            h =>
+            {
+                h.Username(builder.Configuration["RabbitMQ:Username"]
+                    ?? "guest");
+                h.Password(builder.Configuration["RabbitMQ:Password"]
+                    ?? "guest");
+            });
+
+        // Auto-configure endpoints for all consumers
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -15,30 +53,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
-var summaries = new[]
+using (var scope = app.Services.CreateScope())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    var db = scope.ServiceProvider
+        .GetRequiredService<InventoryDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
